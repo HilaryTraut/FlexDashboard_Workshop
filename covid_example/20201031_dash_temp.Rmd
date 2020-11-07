@@ -1,0 +1,99 @@
+---
+title: "Alt CU Boulder Covid Dash"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: rows
+    vertical_layout: fill
+    source_code: embed
+---
+
+<!--- .css scripts can be added directly into html markdown docs --->
+<style>                     
+.navbar {
+  background-color:black;
+  border-color:black;
+}
+.navbar-brand {
+color:gold!important;
+}
+</style> 
+<!--- the example above changes the header bars colors --->
+
+
+```{r setup, include=FALSE}
+pacman::p_load(flexdashboard, ggplot2, tidyr, scales, DT, plotly)
+```
+
+Overview
+=======================================================================
+
+Row
+-----------------------------------------------------------------------
+
+```{r}
+df <- read.csv("20200921_cu_covid.csv", header = TRUE, na.strings = c("",NA))
+df$Date <- as.Date(df$report_date, format="%m/%d/%y")
+```
+
+### Total Positive Tests at Wardenburg
+
+```{r}
+wardTotal <- max(df$ward_total_pos, na.rm = TRUE)
+valueBox(wardTotal, "Total Wardenberg Cases", color = "black")
+```
+
+### Total Positive Tests BoCo
+
+```{r}
+bcTotal <- max(df$boco_total, na.rm = TRUE)
+valueBox(bcTotal, "Total Boulder County Cases", color = "black")
+```
+
+### Percent BoCo Total from CU Boulder
+
+```{r}
+perCU <- round((max(df$ward_total_pos, na.rm = TRUE)/max(df$boco_total, na.rm = TRUE))*100,2)
+valueBox(paste(perCU, "%"), "Percent Boulder County Cases from CU", color = "gold")
+```
+
+Row
+-----------------------------------------------------------------------
+
+### Overlap of CU Boulder with BoCo Totals
+
+```{r}
+df_2 <- df %>% gather(source, cases_count, c(ward_total_pos, boco_total))
+
+chart2 <- ggplot(data = df_2, aes(x = Date, y = cases_count, fill = source, alpha = source)) + geom_bar(stat = "identity", position = "identity") +
+  theme(axis.text.x = element_text(angle = 45)) + scale_alpha_manual(values=c(.3, .8))
+
+ggplotly(chart2)
+```
+
+### Chart C
+
+```{r}
+p <- c(326196, 33246)
+s <- c("Boulder County", "CU Boulder")
+x <- c("Population", "Population")
+
+pop <- as.data.frame(p,s)
+
+ggplot(data = pop, aes(x = x, y = p, fill = s, alpha = s)) + geom_bar(stat = "identity", position = "identity") + scale_alpha_manual(values=c(.3, .8)) + scale_y_continuous(labels = comma)
+```
+
+```{r}
+ggplot(data = df, aes(x = Date, y = positive_pcr)) + geom_bar(stat = "identity") +
+  theme(axis.text.x = element_text(angle = 45))
+```
+
+Add useful numbers, population of Boulder County 326,196 , number of CU Students, 33,246 account for population density of CU students within Boulder
+
+Data
+==============================================================
+
+### CU Boulder Covid-19 Dataset
+
+```{r}
+datatable(df)
+```

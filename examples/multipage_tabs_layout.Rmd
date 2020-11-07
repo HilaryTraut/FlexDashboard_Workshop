@@ -1,0 +1,72 @@
+---
+title: "multipage"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: rows
+    vertical_layout: fill
+    source_code: embed
+    theme: flatly
+---
+
+```{r setup, include=FALSE}
+pacman::p_load(flexdashboard, ggplot2, plotly)
+```
+
+Page 1
+============================================================================
+Row 
+-----------------------------------------------------------------------
+
+### valueBox
+
+```{r}
+valueBox(value = round(mean(iris$Sepal.Length), digits = 2), caption = "Mean Sepal Length")
+```
+
+### Gauge
+
+```{r}
+gauge(value = iris$Sepal.Length, min = 0, max = 8)
+```
+
+### valueBox2
+
+```{r}
+valueBox(value = round(mean(iris$Sepal.Width), digits = 2), caption = "Mean Sepal Width", color = "green")
+```
+
+Row
+-----------------------------------------------------------------------
+
+### Chart B
+
+```{r}
+ggplot(iris, aes(x = Petal.Length, y = Petal.Width, color = Species)) + geom_point()
+```
+
+### Chart C
+
+```{r}
+ggplot(iris, aes(x = Sepal.Length, y = Sepal.Width, color = Species)) + geom_point()
+```
+
+
+Page 2
+============================================================================
+
+Column {.tabset}
+-----------------------------------------------------------------------
+
+### Chart E
+
+```{r}
+ggplotly(ggplot(iris, aes(x = Petal.Length, y = Petal.Width, color = Species)) + geom_point())
+```
+
+### Chart F
+
+```{r}
+ggplotly(ggplot(iris, aes(x = Sepal.Length, y = Sepal.Width, color = Species)) + geom_point())
+```
+
+
