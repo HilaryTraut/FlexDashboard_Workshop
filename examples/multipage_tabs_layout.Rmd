@@ -60,13 +60,13 @@ Column {.tabset}
 ### Chart E
 
 ```{r}
-ggplotly(ggplot(iris, aes(x = Petal.Length, y = Petal.Width, color = Species)) + geom_point())
+ggplotly(ggplot(iris, aes(x = Petal.Length, y = Petal.Width, color = Species)) + geom_point() + geom_smooth())
 ```
 
 ### Chart F
 
 ```{r}
-ggplotly(ggplot(iris, aes(x = Sepal.Length, y = Sepal.Width, color = Species)) + geom_point())
+ggplotly(ggplot(iris, aes(x = Sepal.Length, y = Sepal.Width, color = Species)) + geom_point() + geom_smooth())
 ```
 
 
