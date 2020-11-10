@@ -6,6 +6,7 @@ output:
     vertical_layout: fill
     source_code: embed
     theme: flatly
+runtime: shiny
 ---
 
 ```{r setup, include=FALSE}
@@ -20,7 +21,8 @@ Row
 ### valueBox
 
 ```{r}
-valueBox(value = round(mean(iris$Sepal.Length), digits = 2), caption = "Mean Sepal Length")
+valueBox(value = round(mean(iris$Sepal.Length), digits = 2), 
+         caption = "Mean Sepal Length")
 ```
 
 ### Gauge
@@ -51,22 +53,49 @@ ggplot(iris, aes(x = Sepal.Length, y = Sepal.Width, color = Species)) + geom_poi
 ```
 
 
-Page 2
+GGPlotly
 ============================================================================
 
 Column {.tabset}
 -----------------------------------------------------------------------
 
-### Chart E
+### Tab1
 
 ```{r}
 ggplotly(ggplot(iris, aes(x = Petal.Length, y = Petal.Width, color = Species)) + geom_point() + geom_smooth())
 ```
 
-### Chart F
+### Tab2
 
 ```{r}
 ggplotly(ggplot(iris, aes(x = Sepal.Length, y = Sepal.Width, color = Species)) + geom_point() + geom_smooth())
 ```
 
+Shiny
+============================================================================
 
+Column {.sidebar}
+-----------------------------------------------------------------------
+
+Select an Iris species to display.
+
+```{r}
+selectInput("spe_group", label = "Select Species",
+            choices = c("setosa", "versicolor", "virginica"), selected = "setosa")
+```
+
+Column
+-----------------------------------------------------------------------
+
+### Reactive Boxplot
+
+```{r}
+renderPlot({
+  
+  iris %>%
+    filter(Species == input$spe_group) %>%
+    ggplot(aes(x = 0, y = Sepal.Width)) +
+    geom_boxplot()
+  
+})
+```
